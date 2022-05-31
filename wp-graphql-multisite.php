@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       WP GraphQL for Multisites
  * Description:       Adds graphql nodes for multisite or network queries
- * Version:           0.0.3
+ * Version:           1.0.0
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Tom Do
@@ -18,18 +18,59 @@ function child_plugin_activate(){
     }
 }
 
+add_action( 'graphql_register_types', 'register_site_type' );
+function register_site_type() {
+    register_graphql_object_type( 'Site', [
+      'fields' => [
+        'blog_id' => [
+            'type' => 'String',
+        ],
+        'domain' => [
+            'type' => 'String',
+        ],
+        'path' => [
+            'type' => 'String',
+        ],		  
+        'site_id' => [
+            'type' => 'String',
+        ],
+        'registered' => [
+            'type' => 'String',
+        ],
+        'last_updated' => [
+            'type' => 'String',
+        ],
+        'public' => [
+            'type' => 'String',
+        ],		  
+        'archived' => [
+            'type' => 'String',
+        ],
+        'mature' => [
+            'type' => 'String',
+        ],
+        'spam' => [
+            'type' => 'String',
+        ],
+        'deleted' => [
+            'type' => 'String',
+        ],
+        'lang_id' => [
+            'type' => 'String',
+        ],
+      ],
+    ] );
+}
+
 add_action( 'graphql_register_types', function() {
 	
+	
+	
 	register_graphql_fields( 'RootQuery', [
-		'SiteUrls' => [
-			'type'        => ["list_of" => "String"],
+		'Sites' => [
+			'type'        => ["list_of" => "Site"],
 			'resolve'     => function() {
-                $sitedata = get_sites();
-				$namelist = [];
-				foreach ($sitedata as $site) {
-				  $namelist[] = $site->domain;
-				}
-				return $namelist;
+				return get_sites();
 			}
 		]
 	] );
